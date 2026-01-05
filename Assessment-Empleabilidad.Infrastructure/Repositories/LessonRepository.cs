@@ -53,7 +53,7 @@ public class LessonRepository : ILessonRepository
     {
         var courseExists = await _context.Courses
             .AnyAsync(c => c.Id == lesson.CourseId && !c.IsDeleted);
-            
+        
         if (!courseExists)
         {
             throw new ArgumentException("El curso especificado no existe o ha sido eliminado.");

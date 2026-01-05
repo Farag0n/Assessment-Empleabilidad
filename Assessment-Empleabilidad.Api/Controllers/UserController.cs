@@ -207,7 +207,7 @@ public class UserController : ControllerBase
     }
 
     
-    [HttpDelete("{id:int}")] // <-- Agrega :int
+    [HttpDelete("{id:int}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -253,7 +253,6 @@ public class UserController : ControllerBase
                 return 0;
             }
             
-            // Intenta parsear como entero
             if (int.TryParse(userIdClaim, out int userId))
             {
                 return userId;

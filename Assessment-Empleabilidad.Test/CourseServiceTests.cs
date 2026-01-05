@@ -17,7 +17,7 @@ public class CourseServiceTests
         _mockRepo = new Mock<ICourseRepository>();
         _service = new CourseService(_mockRepo.Object);
     }
-
+    
     [Fact]
     public async Task PublishCourse_WithLessons_ShouldSucceed()
     {
@@ -28,7 +28,7 @@ public class CourseServiceTests
             Status = CourseStatus.Draft,
             Lessons = new List<Lesson> { new Lesson { IsDeleted = false } }
         };
-
+        
         _mockRepo.Setup(repo => repo.GetCourseById(courseId))
             .ReturnsAsync(course);
         
@@ -39,7 +39,7 @@ public class CourseServiceTests
         
         _mockRepo.Verify(repo => repo.UpdateCourse(courseId, It.IsAny<Course>()), Times.Once);
     }
-
+    
     [Fact]
     public async Task PublishCourse_WithoutLessons_ShouldFail()
     {
@@ -54,11 +54,11 @@ public class CourseServiceTests
         _mockRepo.Setup(repo => repo.GetCourseById(courseId))
             .ReturnsAsync(course);
 
-
+        
         await Assert.ThrowsAsync<InvalidOperationException>(() => 
             _service.PublishCourseAsync(courseId));
     }
-
+    
     [Fact]
     public async Task DeleteCourse_ShouldBeSoftDelete()
     {

@@ -28,7 +28,6 @@ public class LessonService : ILessonService
 
     public async Task<LessonDtos.LessonResponseDto> AddLessonAsync(LessonDtos.LessonCreateDto dto)
     {
-        // REGLA: Calcular el orden automáticamente (Max + 1)
         var existingLessons = await _lessonRepository.GetLessonsByCourseId(dto.CourseId);
         int newOrder = 1;
         
@@ -55,7 +54,6 @@ public class LessonService : ILessonService
         if (existing == null) return null;
 
         existing.Title = dto.Title;
-        // Nota: No actualizamos el Order aquí, usamos ReorderLessonAsync
 
         var updated = await _lessonRepository.UpdateLesson(existing);
         return MapToDto(updated);
@@ -66,8 +64,7 @@ public class LessonService : ILessonService
         var deleted = await _lessonRepository.DeleteLesson(id);
         return deleted != null;
     }
-
-    // LÓGICA COMPLEJA: Reordenamiento sin duplicados
+    
     public async Task<bool> ReorderLessonAsync(Guid courseId, Guid lessonId, int newOrder)
     {
         var lessons = (await _lessonRepository.GetLessonsByCourseId(courseId)).ToList();
@@ -78,11 +75,9 @@ public class LessonService : ILessonService
         if (lessonToMove.Order == newOrder) return true; // No hay cambios
 
         var oldOrder = lessonToMove.Order;
-
-        // Estrategia: Desplazar los elementos afectados
-        if (newOrder > oldOrder) // Mover hacia abajo (ej: de 2 a 4)
+        
+        if (newOrder > oldOrder)
         {
-            // Restar 1 a los que están entre oldOrder + 1 y newOrder
             var lessonsToShift = lessons.Where(l => l.Order > oldOrder && l.Order <= newOrder);
             foreach (var l in lessonsToShift)
             {
@@ -90,9 +85,8 @@ public class LessonService : ILessonService
                 await _lessonRepository.UpdateLesson(l);
             }
         }
-        else // Mover hacia arriba (ej: de 4 a 2)
+        else
         {
-            // Sumar 1 a los que están entre newOrder y oldOrder - 1
             var lessonsToShift = lessons.Where(l => l.Order >= newOrder && l.Order < oldOrder);
             foreach (var l in lessonsToShift)
             {
@@ -100,8 +94,7 @@ public class LessonService : ILessonService
                 await _lessonRepository.UpdateLesson(l);
             }
         }
-
-        // Asignar nuevo orden a la lección objetivo
+        
         lessonToMove.Order = newOrder;
         await _lessonRepository.UpdateLesson(lessonToMove);
 

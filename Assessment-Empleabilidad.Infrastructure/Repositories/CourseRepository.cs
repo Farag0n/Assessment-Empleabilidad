@@ -52,7 +52,7 @@ public class CourseRepository : ICourseRepository
         {
             query = query.Where(c => c.Title.Contains(searchTerm));
         }
-
+        
         if (status.HasValue)
         {
             query = query.Where(c => c.Status == status.Value);
@@ -61,10 +61,10 @@ public class CourseRepository : ICourseRepository
         var totalCount = await query.CountAsync();
         
         var items = await query
-            .OrderBy(c => c.Title)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
+            .OrderBy(c => c.Title)                 
+            .Skip((page - 1) * pageSize)            
+            .Take(pageSize)                         
+            .ToListAsync();                         
 
         return (items, totalCount);
     }

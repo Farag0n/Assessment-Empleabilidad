@@ -12,7 +12,7 @@ public interface ICourseRepository
     public Task<(IEnumerable<Course> Items, int TotalCount)> SearchCourses(
         string? searchTerm, 
         CourseStatus? status, 
-        int page, 
+        int page,
         int pageSize
     );
     

@@ -31,7 +31,7 @@ public class CourseService : ICourseService
             Id = course.Id,
             Title = course.Title,
             Status = course.Status,
-            TotalLessons = course.Lessons.Count(l => !l.IsDeleted), // Contar solo activas
+            TotalLessons = course.Lessons.Count(l => !l.IsDeleted),
             LastModified = course.UpdatedAt ?? course.CreatedAt
         };
     }
@@ -50,7 +50,7 @@ public class CourseService : ICourseService
         var course = new Course
         {
             Title = dto.Title,
-            Status = CourseStatus.Draft // Por defecto Draft
+            Status = CourseStatus.Draft
         };
 
         var created = await _courseRepository.AddCourse(course);
@@ -79,8 +79,7 @@ public class CourseService : ICourseService
     {
         var course = await _courseRepository.GetCourseById(id);
         if (course == null) return false;
-
-        // REGLA DE NEGOCIO: Debe tener lecciones activas
+        
         if (!course.Lessons.Any(l => !l.IsDeleted))
         {
             throw new InvalidOperationException("No se puede publicar un curso sin lecciones activas.");
@@ -100,8 +99,7 @@ public class CourseService : ICourseService
         await _courseRepository.UpdateCourse(id, course);
         return true;
     }
-
-    // Mapper manual simple
+    
     private static CourseDtos.CourseResponseDto MapToDto(Course course)
     {
         return new CourseDtos.CourseResponseDto

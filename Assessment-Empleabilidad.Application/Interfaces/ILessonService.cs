@@ -10,7 +10,6 @@ public interface ILessonService
     Task<LessonDtos.LessonResponseDto> AddLessonAsync(LessonDtos.LessonCreateDto lessonCreateDto);
     Task<LessonDtos.LessonResponseDto?> UpdateLessonAsync(LessonDtos.LessonUpdateDto lessonUpdateDto);
     Task<bool> DeleteLessonAsync(Guid id);
-
-    // Requisito Obligatorio: Reordenar
+    
     Task<bool> ReorderLessonAsync(Guid courseId, Guid lessonId, int newOrder);
 }
