@@ -19,6 +19,7 @@ public class LessonController : ControllerBase
         _logger = logger;
     }
     
+    [Authorize(Roles = "Admin,User")]
     [HttpGet("course/{courseId:guid}")]
     public async Task<IActionResult> GetByCourse(Guid courseId)
     {
@@ -26,6 +27,7 @@ public class LessonController : ControllerBase
         return Ok(lessons);
     }
 
+    [Authorize(Roles = "Admin,User")]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {

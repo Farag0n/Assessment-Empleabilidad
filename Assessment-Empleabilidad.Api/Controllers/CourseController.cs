@@ -20,6 +20,7 @@ public class CourseController : ControllerBase
         _logger = logger;
     }
     
+    [Authorize(Roles = "Admin,User")]
     [HttpGet("search")]
     public async Task<IActionResult> Search(
         [FromQuery] string? searchTerm, 
@@ -47,6 +48,7 @@ public class CourseController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin,User")]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
@@ -55,6 +57,7 @@ public class CourseController : ControllerBase
         return Ok(course);
     }
     
+    [Authorize(Roles = "Admin,User")]
     [HttpGet("{id:guid}/summary")]
     public async Task<IActionResult> GetSummary(Guid id)
     {
