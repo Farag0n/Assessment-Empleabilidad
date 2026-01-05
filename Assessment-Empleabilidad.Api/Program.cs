@@ -139,7 +139,7 @@ if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName == "Local
 //Run this command to perform local tests if any issue appears:
 //export ASPNETCORE_ENVIRONMENT=Local dotnet run --project ProductCatalog.Api
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
