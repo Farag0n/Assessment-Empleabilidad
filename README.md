@@ -1,4 +1,4 @@
-# Assessment_M6 - Employee & Department Management API
+# Assessment_M6 - Courses & Lessons Management API
 
 ## 📖 Description
 
@@ -30,14 +30,6 @@ Assessment-Empleabilidad/
 │   └── Extensions/
 └── Assessment-Empleabilidad.Test/            
 ```
-### Database Schema
-
-
-### Authentication Flow
-
-
-### Component Architecture
-
 
 ---
 
@@ -60,10 +52,10 @@ Clone the repository:
 git clone <repository-url>
 cd Assessment-Empleabilidad
 ```
-Open appsetings.txt in this file you find enviroment variables:
+Open the appsettings file to review the environment variables.
 
+You don't need to configure a local database; the application uses a hosted MySQL instance in Aiven.
 ["appsetings"](appsetings-proyect.txt)
-Dont need config your local db is in Aiven
 
 
 Run the application:
@@ -153,7 +145,7 @@ Role: Admin
 ### Roles
 
 * **Admin**: Full access
-* **User**: Can only manage own employee profile
+* **User**: Can only view info
 
 ---
 
@@ -212,44 +204,127 @@ public class Course
 
 ---
 
-## 🧪 Testing the API
-
-### Using Postman
-
-Environment variables example:
-
-```
-base_url: http://localhost:5167
-admin_token: {{login_admin_response}}
-user_token: {{login_user_response}}
+### 🧪 Running Unit Tests
+On the terminal in Folder Assessment-Empleabilidad write this comand
+```bash
+dotnet test
 ```
 
-Sample Requests
-**Login:**
+## 🔬 Testing the API with curl
+
+Below are basic examples to test the API using `curl`.
+Make sure the API is running locally at:
+
+```
+http://localhost:5167
+```
+
+---
+
+## 1️⃣ Login (Get JWT Token)
 
 ```bash
 curl -X POST "http://localhost:5167/api/Auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"email":"test@qwe.com","password":"123"}'
+  -d '{
+    "email": "test@qwe.com",
+    "password": "123"
+  }'
 ```
 
-**Create Department:**
+📌 **Response example:**
+
+```json
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken": "d8a1c7e3..."
+}
+```
+
+Save the `accessToken` to use in the next requests.
+
+---
+
+## 2️⃣ Create a Course (Authenticated)
 
 ```bash
-curl -X POST "http://localhost:5167/api/Departments" \
-  -H "Authorization: Bearer {token}" \
+curl -X POST "http://localhost:5167/api/Course" \
+  -H "Authorization: Bearer {accessToken}" \
   -H "Content-Type: application/json" \
-  -d '{"name":"HR","description":"Human Resources"}'
+  -d '{
+    "title": "Clean Architecture Fundamentals"
+  }'
 ```
 
-**Create Employee:**
+---
+
+## 3️⃣ Search Courses (Public)
 
 ```bash
-curl -X POST "http://localhost:5167/api/Employees" \
-  -H "Authorization: Bearer {token}" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"John","lastName":"Doe","age":30,"docNumber":"12345678","email":"john@company.com","phoneNumber":"+1234567890","state":0,"departmentId":1}'
+curl -X GET "http://localhost:5167/api/Course/search?page=1&pageSize=10"
 ```
+
+---
+
+## 4️⃣ Create a Lesson for a Course
+
+```bash
+curl -X POST "http://localhost:5167/api/Lesson" \
+  -H "Authorization: Bearer {accessToken}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Introduction to Clean Architecture",
+    "courseId": "COURSE_GUID_HERE"
+  }'
+```
+
+📌 Lessons are automatically ordered when created.
+
+---
+
+## 5️⃣ Get Lessons by Course
+
+```bash
+curl -X GET "http://localhost:5167/api/Lesson/course/COURSE_GUID_HERE" \
+  -H "Authorization: Bearer {accessToken}"
+```
+
+---
+
+## 6️⃣ Publish a Course
+
+> Requires at least one active lesson.
+
+```bash
+curl -X PATCH "http://localhost:5167/api/Course/COURSE_GUID_HERE/publish" \
+  -H "Authorization: Bearer {accessToken}"
+```
+
+---
+
+## 7️⃣ Reorder Lessons in a Course
+
+```bash
+curl -X PATCH "http://localhost:5167/api/Lesson/COURSE_GUID_HERE/reorder" \
+  -H "Authorization: Bearer {accessToken}" \
+  -H "Content-Type: application/json" \
+  -d '[
+    { "lessonId": "LESSON_GUID_1", "order": 1 },
+    { "lessonId": "LESSON_GUID_2", "order": 2 }
+  ]'
+```
+
+---
+
+## 🔐 Authorization Header Reminder
+
+All protected endpoints require the header:
+
+```http
+Authorization: Bearer {accessToken}
+```
+
+
 
 ---
 
@@ -328,8 +403,8 @@ MIT License
 ## 👤 Author
 
 **Name:** Miguel Angel Angarita
-**Project:** Assessment_M6 - Employee Management System
-**Date:** December 2025
+**Project:** Assessment_M6 - Courses & Lessons Management System
+**Date:** January 2026
 
 ---
 
