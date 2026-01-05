@@ -47,8 +47,7 @@ public class CourseRepository : ICourseRepository
         var query = _context.Courses
             .Include(c => c.Lessons)
             .Where(c => !c.IsDeleted);
-
-        // Aplicar filtros
+        
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
             query = query.Where(c => c.Title.Contains(searchTerm));
@@ -58,11 +57,9 @@ public class CourseRepository : ICourseRepository
         {
             query = query.Where(c => c.Status == status.Value);
         }
-
-        // Obtener el total antes de paginar
+        
         var totalCount = await query.CountAsync();
-
-        // Aplicar paginación
+        
         var items = await query
             .OrderBy(c => c.Title)
             .Skip((page - 1) * pageSize)

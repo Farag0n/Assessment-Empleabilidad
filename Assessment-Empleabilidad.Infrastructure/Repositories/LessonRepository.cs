@@ -51,7 +51,6 @@ public class LessonRepository : ILessonRepository
 
     public async Task<Lesson> AddLesson(Lesson lesson)
     {
-        // Verificar que el curso existe y no está eliminado
         var courseExists = await _context.Courses
             .AnyAsync(c => c.Id == lesson.CourseId && !c.IsDeleted);
             
@@ -68,7 +67,6 @@ public class LessonRepository : ILessonRepository
         await _context.Lessons.AddAsync(lesson);
         await _context.SaveChangesAsync();
         
-        // Cargar la relación Course
         await _context.Entry(lesson).Reference(l => l.Course).LoadAsync();
         
         return lesson;
@@ -82,7 +80,6 @@ public class LessonRepository : ILessonRepository
 
         if (existing != null)
         {
-            // Si se cambia el curso, verificar que existe
             if (existing.CourseId != lesson.CourseId)
             {
                 var courseExists = await _context.Courses

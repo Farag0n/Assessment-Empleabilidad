@@ -14,7 +14,7 @@ public class CourseDtos
     {
         public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
-        public CourseStatus Status { get; set; }//si quiero hacer lo de estatus via endpoint como debo hacerlo
+        public CourseStatus Status { get; set; }
     }
     
     public class CourseResponseDto

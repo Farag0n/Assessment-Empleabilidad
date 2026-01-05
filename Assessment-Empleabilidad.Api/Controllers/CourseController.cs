@@ -8,7 +8,7 @@ namespace Assessment_Empleabilidad.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize] // Protege todos los endpoints por defecto
+[Authorize]
 public class CourseController : ControllerBase
 {
     private readonly ICourseService _courseService;
@@ -19,8 +19,7 @@ public class CourseController : ControllerBase
         _courseService = courseService;
         _logger = logger;
     }
-
-    // GET: api/Course/search?searchTerm=react&status=Published&page=1&pageSize=10
+    
     [HttpGet("search")]
     public async Task<IActionResult> Search(
         [FromQuery] string? searchTerm, 
@@ -32,7 +31,6 @@ public class CourseController : ControllerBase
         {
             var result = await _courseService.SearchCoursesAsync(searchTerm, status, page, pageSize);
             
-            // Retornamos una estructura paginada estándar
             return Ok(new
             {
                 Data = result.Items,
@@ -56,8 +54,7 @@ public class CourseController : ControllerBase
         if (course == null) return NotFound("Curso no encontrado");
         return Ok(course);
     }
-
-    // GET: api/Course/{id}/summary
+    
     [HttpGet("{id:guid}/summary")]
     public async Task<IActionResult> GetSummary(Guid id)
     {
@@ -100,10 +97,9 @@ public class CourseController : ControllerBase
     {
         var success = await _courseService.DeleteCourseAsync(id);
         if (!success) return NotFound("Curso no encontrado");
-        return NoContent(); // 204 No Content
+        return NoContent();
     }
-
-    // PATCH: api/Course/{id}/publish
+    
     [HttpPatch("{id:guid}/publish")]
     public async Task<IActionResult> Publish(Guid id)
     {
@@ -115,12 +111,10 @@ public class CourseController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            // Capturamos la regla de negocio: "No se puede publicar sin lecciones"
             return BadRequest(new { Message = ex.Message });
         }
     }
-
-    // PATCH: api/Course/{id}/unpublish
+    
     [HttpPatch("{id:guid}/unpublish")]
     public async Task<IActionResult> Unpublish(Guid id)
     {

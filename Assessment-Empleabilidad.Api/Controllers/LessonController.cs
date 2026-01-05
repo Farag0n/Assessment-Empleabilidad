@@ -18,8 +18,7 @@ public class LessonController : ControllerBase
         _lessonService = lessonService;
         _logger = logger;
     }
-
-    // GET: api/Lesson/course/{courseId}
+    
     [HttpGet("course/{courseId:guid}")]
     public async Task<IActionResult> GetByCourse(Guid courseId)
     {
@@ -45,7 +44,7 @@ public class LessonController : ControllerBase
             var createdLesson = await _lessonService.AddLessonAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = createdLesson.Id }, createdLesson);
         }
-        catch (ArgumentException ex) // Ej: Curso no existe
+        catch (ArgumentException ex)
         {
             return BadRequest(new { Message = ex.Message });
         }
@@ -74,9 +73,7 @@ public class LessonController : ControllerBase
         if (!success) return NotFound("Lección no encontrada");
         return NoContent();
     }
-
-    // PATCH: api/Lesson/{courseId}/reorder
-    // Body: { "lessonId": "...", "newOrder": 3 }
+    
     [HttpPatch("{courseId:guid}/reorder")]
     public async Task<IActionResult> Reorder(Guid courseId, [FromBody] LessonDtos.LessonReorderDto dto)
     {
