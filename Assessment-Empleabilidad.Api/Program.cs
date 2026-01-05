@@ -140,6 +140,7 @@ if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName == "Local
 //export ASPNETCORE_ENVIRONMENT=Local dotnet run --project ProductCatalog.Api
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

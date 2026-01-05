@@ -106,28 +106,28 @@ docker compose up --build
 | PUT    | /api/Users/{id}          | Update user       |
 | DELETE | /api/Users/{id}          | Delete user       |
 
-### Department Management (Admin Only)
+### Course Management
 
-| Method | Endpoint                     | Description            |
-| ------ | ---------------------------- | ---------------------- |
-| GET    | /api/Departments             | Get all departments    |
-| GET    | /api/Departments/{id}        | Get department by ID   |
-| GET    | /api/Departments/name/{name} | Get department by name |
-| POST   | /api/Departments             | Create department      |
-| PUT    | /api/Departments/{id}        | Update department      |
-| DELETE | /api/Departments/{id}        | Delete department      |
+| Method | Endpoint                     | Description                          | Access |
+|--------|------------------------------|--------------------------------------|--------|
+| GET    | `/api/Course/search`         | Search & Filter (Pagination support) | Open   |
+| GET    | `/api/Course/{id}`           | Get course details                   | Auth   |
+| GET    | `/api/Course/{id}/summary`   | Lightweight summary (Stats)          | Auth   |
+| POST   | `/api/Course`                | Create new course (Draft)            | Auth   |
+| PUT    | `/api/Course/{id}`           | Update course info                   | Auth   |
+| DELETE | `/api/Course/{id}`           | Soft delete course                   | Auth   |
+| PATCH  | `/api/Course/{id}/publish`   | Publish (Requires active lessons)    | Auth   |
+| PATCH  | `/api/Course/{id}/unpublish` | Revert to Draft                      | Auth   |
 
-### Employee Management
+### Lesson Management
 
-| Method | Endpoint                     | Description           | Access      |
-| ------ | ---------------------------- | --------------------- | ----------- |
-| GET    | /api/Employees               | Get all employees     | Admin       |
-| GET    | /api/Employees/{id}          | Get employee by ID    | Admin       |
-| GET    | /api/Employees/email/{email} | Get employee by email | Admin       |
-| GET    | /api/Employees/me            | Get own profile       | User        |
-| POST   | /api/Employees               | Create employee       | Admin       |
-| PUT    | /api/Employees/{id}          | Update employee       | Admin/User* |
-| DELETE | /api/Employees/{id}          | Delete employee       | Admin       |
+| Method | Endpoint                         | Description                    | Access |
+|--------|----------------------------------|--------------------------------|--------|
+| GET    | `/api/Lesson/course/{id}`        | Get all lessons for a course   | Auth   |
+| POST   | `/api/Lesson`                    | Create lesson (Auto-order)     | Auth   |
+| PUT    | `/api/Lesson/{id}`               | Update lesson title            | Auth   |
+| DELETE | `/api/Lesson/{id}`               | Soft delete lesson             | Auth   |
+| PATCH  | `/api/Lesson/{courseId}/reorder` | Complex Logic: Reorder lessons | Auth   |
 
 *Users can only update their own profile.
 
