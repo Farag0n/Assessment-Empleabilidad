@@ -95,18 +95,20 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // ===================== CORS Configuration (in case I have time to build the Frontend) =====================
-var corsPolicyName = "AllowSpecificOrigins";
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        policy =>
-        {
-            policy.AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod(); // if the frontend sends cookies or auth headers
-        });
-});
+// var corsPolicyName = "AllowSpecificOrigins";
+//
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy("AllowAll",
+//         policy =>
+//         {
+//             policy.AllowAnyOrigin()
+//                 .AllowAnyHeader()
+//                 .AllowAnyMethod(); // if the frontend sends cookies or auth headers
+//         });
+// });
+//Provicional para el front:
+builder.Services.AddCors();
 
 // ===================== Construction and Pipeline =====================
 var app = builder.Build();
@@ -140,7 +142,13 @@ if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName == "Local
 //export ASPNETCORE_ENVIRONMENT=Local dotnet run --project ProductCatalog.Api
 
 //app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+//app.UseCors("AllowAll");
+//cors para conectar con front: 
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true)
+    .AllowCredentials());
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
