@@ -44,27 +44,33 @@ public class CourseRepository : ICourseRepository
         int page, 
         int pageSize)
     {
+        //aca solo se trae los cursos y lecciones que no esten eliminados
         var query = _context.Courses
             .Include(c => c.Lessons)
             .Where(c => !c.IsDeleted);
         
+        //filtro por texto busca por titulo
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
             query = query.Where(c => c.Title.Contains(searchTerm));
         }
-        
+
+        //filtro opcional pos estado
         if (status.HasValue)
         {
             query = query.Where(c => c.Status == status.Value);
         }
         
+        //contar el total
         var totalCount = await query.CountAsync();
         
+        
+        //obtiene solo la pagina pedida
         var items = await query
-            .OrderBy(c => c.Title)                 
-            .Skip((page - 1) * pageSize)            
-            .Take(pageSize)                         
-            .ToListAsync();                         
+            .OrderBy(c => c.Title)                 // 1️⃣ Ordena todos los cursos por título (A → Z)
+            .Skip((page - 1) * pageSize)            // 2️⃣ Salta los registros de las páginas anteriores
+            .Take(pageSize)                         // 3️⃣ Toma solo los registros de la página actual
+            .ToListAsync();                         // 4️⃣ Ejecuta la query en la BD y devuelve la lista
 
         return (items, totalCount);
     }
